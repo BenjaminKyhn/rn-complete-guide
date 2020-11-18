@@ -1,6 +1,6 @@
 import {StatusBar} from 'expo-status-bar';
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TextInput, Button, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, TextInput, Button, ScrollView, FlatList} from 'react-native';
 
 export default function App() {
     const [enteredGoal, setEnteredGoal] = useState('');
@@ -11,7 +11,8 @@ export default function App() {
     };
 
     const addGoalHandler = () => {
-        setCourseGoals(currentGoals => [...currentGoals, enteredGoal]); // Spread syntax takes an existing array and combines it with new elements
+        setCourseGoals(currentGoals => [...currentGoals,
+            {uid: Math.random().toString(), value: enteredGoal}]); // Spread syntax takes an existing array and combines it with new elements
     };
 
     return (
@@ -25,13 +26,15 @@ export default function App() {
                 />
                 <Button title="ADD" onPress={addGoalHandler}/>
             </View>
-            <ScrollView>
-                {courseGoals.map(goal => (
-                    <View key={goal} style={styles.listItem}>
-                        <Text>{goal}</Text>
+            <FlatList
+                keyExtractor={(item, index) => item.uid} // How to extract the key from each item
+                data={courseGoals}
+                renderItem={itemData => (
+                    <View style={styles.listItem}>
+                        <Text>{itemData.item.value}</Text>
                     </View>
-                ))}
-            </ScrollView>
+                )}
+            />
         </View>
     );
 }
