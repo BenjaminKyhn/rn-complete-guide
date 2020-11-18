@@ -13,13 +13,19 @@ export default function App() {
         ]); // Spread syntax takes an existing array and combines it with new elements
     };
 
+    const removeGoalHandler = goalId => {
+        setCourseGoals(currentGoals => {
+            return currentGoals.filter((goal) => goal.uid !== goalId); // Return a new array where we only keep the goals with an id that is not equal to the goalId parameter
+        });
+    }
+
     return (
         <View style={styles.screen}>
             <GoalInput onAddGoal={addGoalHandler}/>
             <FlatList
                 keyExtractor={(item, index) => item.uid} // How to extract the key from each item
                 data={courseGoals}
-                renderItem={itemData => <GoalItem title={itemData.item.value}/>}
+                renderItem={itemData => <GoalItem id={itemData.item.uid} onDelete={removeGoalHandler} title={itemData.item.value}/>}
             />
         </View>
     );
