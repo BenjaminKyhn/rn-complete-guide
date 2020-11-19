@@ -5,12 +5,14 @@ import GoalInput from "./components/GoalInput";
 
 export default function App() {
     const [courseGoals, setCourseGoals] = useState([]);
+    const [isAddMode, setIsAddMode] = useState(false);
 
     const addGoalHandler = goalTitle => {
         setCourseGoals(currentGoals => [
             ...currentGoals,
             {uid: Math.random().toString(), value: goalTitle}
         ]); // Spread syntax takes an existing array and combines it with new elements
+        setIsAddMode(false);
     };
 
     const removeGoalHandler = goalId => {
@@ -19,13 +21,23 @@ export default function App() {
         });
     }
 
+    const cancelGoalAdditionHandler = () => {
+        setIsAddMode(false);
+    }
+
     return (
         <View style={styles.screen}>
-            <GoalInput onAddGoal={addGoalHandler}/>
+            <Button title="ADD NEW GOAL" onPress={() => setIsAddMode(true)}/>
+            <GoalInput
+                visible={isAddMode}
+                onAddGoal={addGoalHandler}
+                onCancel={cancelGoalAdditionHandler}
+            />
             <FlatList
                 keyExtractor={(item, index) => item.uid} // How to extract the key from each item
                 data={courseGoals}
-                renderItem={itemData => <GoalItem id={itemData.item.uid} onDelete={removeGoalHandler} title={itemData.item.value}/>}
+                renderItem={itemData => <GoalItem id={itemData.item.uid} onDelete={removeGoalHandler}
+                                                  title={itemData.item.value}/>}
             />
         </View>
     );
